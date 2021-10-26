@@ -1,0 +1,6 @@
+.cardMUI {
+  transition: transform;
+}
+.cardMUI:hover {
+  transform: scale(1.02);
+}
