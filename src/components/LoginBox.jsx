@@ -5,10 +5,19 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import * as React from "react";
+import Typography from "@mui/material/Typography";
 
 import Divider from "@mui/material/Divider";
 import Box from "@mui/material/Box";
-
+import {
+  pink,
+  lightGreen,
+  blue,
+  yellow,
+  cyan,
+  deepPurple,
+  deepOrange,
+} from "@mui/material/colors";
 import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -16,7 +25,8 @@ import IconButton from "@mui/material/IconButton";
 import Input from "@mui/material/Input";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
-
+import AccessibilityNewSharpIcon from "@mui/icons-material/AccessibilityNewSharp";
+import AccessibilityIcon from "@mui/icons-material/Accessibility";
 import { BrowserRouter as Router, Link as RouterLink } from "react-router-dom";
 import { useAuth } from "./useAuth";
 import { Button } from "@mui/material";
@@ -44,14 +54,32 @@ export const LoginBox = () => {
     showPassword: false,
   });
 
-  let { from } = location.state || { from: { pathname: "/" } };
+  let { from } = location.state || { from: { pathname: "/allbooks" } };
   return (
-    <div className="loginBox">
-      <h3>BRAINS BOOKS</h3>
+    <Box
+      className="loginBox"
+      sx={{ border: 2, borderColor: "secondary.main", borderRadius: "10px" }}
+    >
+      <Box
+        sx={{ border: 2, borderColor: "secondary.main", borderRadius: "10px" }}
+      >
+        <AccessibilityNewSharpIcon
+          sx={{ color: deepOrange[500], fontSize: 40 }}
+        />
+        <AccessibilityIcon sx={{ color: yellow[800], fontSize: 40 }} />
+        <AccessibilityNewSharpIcon sx={{ color: blue[800], fontSize: 40 }} />
+        <AccessibilityIcon sx={{ color: lightGreen[500], fontSize: 40 }} />
+        <AccessibilityNewSharpIcon sx={{ color: pink[500], fontSize: 40 }} />
+        <AccessibilityIcon sx={{ color: cyan[500], fontSize: 40 }} />
+        <AccessibilityNewSharpIcon
+          sx={{ color: deepPurple[400], fontSize: 40 }}
+        />
+      </Box>
+
       <Formik
         initialValues={{ username: "", password: "" }}
         onSubmit={(values, { setSubmitting }) => {
-          console.log("in submit");
+          // console.log("in submit");
 
           signin(
             values.username,
@@ -137,20 +165,17 @@ export const LoginBox = () => {
               <Button
                 variant="text"
                 color="secondary"
-                type="submit"
                 component={RouterLink}
                 to="/signup"
               >
                 Sign up
               </Button>
             </Box>
-            <br />
-            <br />
 
             <p className="validation">{error ? error : ""}</p>
           </form>
         )}
       </Formik>
-    </div>
+    </Box>
   );
 };

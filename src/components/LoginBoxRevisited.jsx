@@ -12,7 +12,18 @@ import { Button } from "@mui/material";
 import { Formik } from "formik";
 import { TextField } from "@mui/material";
 import "./LoginBoxRevisited.css";
-
+import AccessibilityNewSharpIcon from "@mui/icons-material/AccessibilityNewSharp";
+import AccessibilityIcon from "@mui/icons-material/Accessibility";
+import {
+  pink,
+  lightGreen,
+  blue,
+  yellow,
+  cyan,
+  deepPurple,
+  deepOrange,
+} from "@mui/material/colors";
+import Box from "@mui/material/Box";
 import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -68,11 +79,28 @@ export const LoginBoxRevisited = () => {
     showPassword2: false,
   });
 
-  let { from } = location.state || { from: { pathname: "/" } };
+  let { from } = location.state || { from: { pathname: "/login" } };
 
   return (
-    <div className="loginBox">
-      <h3>BRAINS BOOKS - NEW USER</h3>
+    <Box
+      className="loginBox"
+      sx={{ border: 2, borderColor: "secondary.main", borderRadius: "10px" }}
+    >
+      <Box
+        sx={{ border: 2, borderColor: "secondary.main", borderRadius: "10px" }}
+      >
+        <AccessibilityNewSharpIcon
+          sx={{ color: deepOrange[500], fontSize: 40 }}
+        />
+        <AccessibilityIcon sx={{ color: yellow[800], fontSize: 40 }} />
+        <AccessibilityNewSharpIcon sx={{ color: blue[800], fontSize: 40 }} />
+        <AccessibilityIcon sx={{ color: lightGreen[500], fontSize: 40 }} />
+        <AccessibilityNewSharpIcon sx={{ color: pink[500], fontSize: 40 }} />
+        <AccessibilityIcon sx={{ color: cyan[500], fontSize: 40 }} />
+        <AccessibilityNewSharpIcon
+          sx={{ color: deepPurple[400], fontSize: 40 }}
+        />
+      </Box>
       <Formik
         initialValues={{ username: "", password: "", repeatedPassword: "" }}
         validate={async (values) => {
@@ -280,14 +308,14 @@ export const LoginBoxRevisited = () => {
             <br />
             {errors.strength === undefined &&
             !errors.username &&
-            values.repeatedPassword === values.password ? (
+            values.repeatedPassword === values.password &&
+            touched.password &&
+            touched.username ? (
               <Button
                 variant="text"
                 color="secondary"
                 type="submit"
                 disabled={isSubmitting}
-                component={RouterLink}
-                to="/login"
               >
                 SIGN UP
               </Button>
@@ -299,6 +327,6 @@ export const LoginBoxRevisited = () => {
           </form>
         )}
       </Formik>
-    </div>
+    </Box>
   );
 };

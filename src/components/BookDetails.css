@@ -1,7 +1,30 @@
-.formContent{
-    max-width: 60vw;
-    padding: 20px;
-    border: 2px #a1c2ff solid;
-    border-radius: 40px;
-    margin: 10px;
+.validation {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: left;
+  margin-left: 5px;
+  color: red;
+  font-size: 0.75em;
+  font-weight: 400;
+}
+
+.validation-caption {
+  margin: 0;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  color: violet;
+  font-size: 0.8em;
+  font-weight: 500;
+}
+
+.editBox {
+  background: ghostwhite;
+  border: #bd4089 2px solid;
+  margin: 50px;
+  border-radius: 10px;
+  width: 800px;
+  padding: 25px;
+  text-align: center;
 }

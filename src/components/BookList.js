@@ -81,6 +81,7 @@ const BookList = ({ list, onDelete }) => {
           sx={{
             padding: "15px",
             width: "300px",
+            height: "280",
           }}
           key={row.id}
         >
@@ -104,7 +105,7 @@ const BookList = ({ list, onDelete }) => {
               </Typography>
 
               {row.authors.filter(onlyUnique).length > 1 ? (
-                <Typography sx={{ fontSize: 12 }}>
+                <Typography sx={{ fontSize: 12 }} noWrap>
                   {row.authors[0]} and{" "}
                   {row.authors.filter(onlyUnique).length === 2
                     ? row.authors[1]

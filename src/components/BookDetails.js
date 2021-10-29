@@ -1,33 +1,79 @@
 import React, { useState } from "react";
 import { Formik } from "formik";
+import { FieldArray } from "formik";
+import { Field, getIn } from "formik";
 import "./BookDetails.css";
-import { customerYupSchema, toStandardTime } from "./validationTools";
+import { bookYupSchema, toStandardTime } from "./validationTools";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import DatePicker from "@mui/lab/DatePicker";
 import { useHistory } from "react-router-dom";
+import { Box } from "@mui/system";
+import { Typography } from "@mui/material";
+import { Input } from "@mui/material";
+import { Grid } from "@mui/material";
+import { Rating } from "@mui/material";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
+import DeleteIcon from "@mui/icons-material/Delete";
+import IconButton from "@mui/material/IconButton";
+import Divider from "@mui/material/Divider";
+import AddRoundedIcon from "@mui/icons-material/AddRounded";
+import Switch from "@mui/material/Switch";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormControl from "@mui/material/FormControl";
+import FormGroup from "@mui/material/FormGroup";
 
-const BookDetails = ({ startingMode, customer, action }) => {
+import FormLabel from "@mui/material/FormLabel";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+
+const ErrorMessage = ({ name }) => (
+  <Field
+    name={name}
+    render={({ form }) => {
+      const error = getIn(form.errors, name);
+      const touch = getIn(form.touched, name);
+      return touch && error ? error : null;
+    }}
+  />
+);
+
+const BookDetails = ({ startingMode, book, action }) => {
   const [mode, setMode] = useState(startingMode);
   const history = useHistory();
+  const [ratingValue, setRatingValue] = React.useState(2);
+
   let message = "";
   let inputProps = {};
   let hideID = false;
   if (mode === "view") {
-    message = `Pregled ${customer.firstName} ${customer.lastName}`;
+    message = `Showing details for ${book.title}`;
     inputProps = { readOnly: true };
   } else if (mode === "edit") {
-    message = `Izmena ${customer.firstName} ${customer.lastName}`;
+    message = `Editing ${book.title}`;
   } else if (mode === "create") {
-    message = "Kreiranje nove musterije";
+    message = "New book";
     hideID = true;
   }
   return (
-    <div className="formContent">
-      <h3>{message}</h3>
+    <div className="editBox">
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Typography
+            sx={{
+              fontWeight: "bold",
+              fontSize: "h5.fontSize",
+            }}
+          >
+            {message}
+          </Typography>
+        </Grid>
+      </Grid>
       <Formik
-        initialValues={customer}
-        validationSchema={customerYupSchema}
+        initialValues={book}
+        validationSchema={bookYupSchema}
         onSubmit={(values, { setSubmitting }) => {
           const rez = action(values);
           setSubmitting(false);
@@ -47,128 +93,306 @@ const BookDetails = ({ startingMode, customer, action }) => {
           isSubmitting,
         }) => (
           <form onSubmit={handleSubmit}>
-            {hideID || (
-              <TextField
-                fullWidth
-                margin="normal"
-                name="id"
-                label="Id"
-                value={values.id}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={touched.id && Boolean(errors.id)}
-                helperText={touched.id && errors.id}
-                InputProps={{ readOnly: true }}
-                variant="outlined"
-              />
-            )}
-            <TextField
-              fullWidth
-              margin="normal"
-              name="firstName"
-              label="Ime"
-              value={values.firstName}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={touched.firstName && Boolean(errors.firstName)}
-              helperText={touched.firstName && errors.firstName}
-              variant="outlined"
-              InputProps={inputProps}
-            />
-            <TextField
-              fullWidth
-              margin="normal"
-              name="lastName"
-              label="Prezime"
-              value={values.lastName}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={touched.lastName && Boolean(errors.lastName)}
-              helperText={touched.lastName && errors.lastName}
-              variant="outlined"
-              InputProps={inputProps}
-            />
+            <Grid container spacing={4}>
+              <Grid item xs={11}>
+                <TextField
+                  variant="standard"
+                  fullWidth
+                  margin="normal"
+                  color="secondary"
+                  name="title"
+                  label="Title"
+                  value={values.title}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.title && Boolean(errors.title)}
+                  helperText={touched.title && errors.title}
+                  InputProps={inputProps}
+                />
+              </Grid>
+              <Grid item xs={1}>
+                {hideID || (
+                  <TextField
+                    variant="standard"
+                    fullWidth
+                    margin="normal"
+                    color="secondary"
+                    name="id"
+                    label="ID"
+                    value={values.id}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    error={touched.id && Boolean(errors.id)}
+                    helperText={touched.id && errors.id}
+                    InputProps={{ readOnly: true }}
+                  />
+                )}
+              </Grid>
+            </Grid>
 
-            <TextField
-              fullWidth
-              margin="normal"
-              name="email"
-              label="E-mail"
-              value={values.email}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={touched.email && Boolean(errors.email)}
-              helperText={touched.email && errors.email}
-              variant="outlined"
-              InputProps={inputProps}
-            />
+            <FieldArray
+              name="authors"
+              render={(arrayHelpers) => (
+                <Grid container rowSpacing={1} columnSpacing={4} sx={{ ml: 0 }}>
+                  {values.authors &&
+                    values.authors.length > 0 &&
+                    values.authors.map((author, index) => (
+                      <Box key={index}>
+                        <Grid item xs="auto">
+                          <Grid container>
+                            <Grid item xs="auto">
+                              <TextField
+                                variant="standard"
+                                fullWidth
+                                margin="normal"
+                                color="secondary"
+                                label={`Author ${index + 1}`}
+                                name={`authors[${index}]`}
+                                value={author}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                InputProps={inputProps}
+                              />
+                            </Grid>
+                            <Grid
+                              item
+                              xs={1}
+                              sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                            >
+                              {" "}
+                              {mode !== "view" ? (
+                                <IconButton
+                                  aria-label="delete"
+                                  type="button"
+                                  onClick={() => arrayHelpers.remove(index)} // remove an author from the list
+                                >
+                                  <DeleteIcon color="secondary" />
+                                </IconButton>
+                              ) : (
+                                ""
+                              )}
+                            </Grid>
+                          </Grid>
+                          <span
+                            className="validation"
+                            style={{ margin: "0px" }}
+                          >
+                            <ErrorMessage name={`authors[${index}]`} />
+                          </span>
+                        </Grid>
+                      </Box>
+                    ))}
 
-            <DatePicker
-              margin="normal"
-              name="birthday"
-              label="Rodjendan:"
-              value={values.birthday}
-              readOnly={inputProps.readOnly ? true : false}
-              onChange={(e) => {
-                setFieldValue("birthday", toStandardTime(e));
-                setFieldTouched("birthday", true, true);
-                validateField("birthday");
-              }}
-              onBlur={handleBlur}
-              renderInput={(params) => <TextField {...params} />}
+                  {/* Add a new empty item at the end of the list */}
+                  {mode !== "view" ? (
+                    <IconButton
+                      aria-label="add"
+                      type="button"
+                      onClick={() => arrayHelpers.push("")}
+                    >
+                      <AddRoundedIcon color="secondary" />
+                    </IconButton>
+                  ) : (
+                    ""
+                  )}
+                  {mode !== "view" && values.authors.length === 0 ? (
+                    <span className="validation-caption">
+                      Click the icon to add an author
+                    </span>
+                  ) : (
+                    ""
+                  )}
+                </Grid>
+              )}
             />
-            <span>
-              {touched.birthday && Boolean(errors.birthday)
-                ? errors.birthday
-                : ""}
-            </span>
-            <br />
-            <DatePicker
-              margin="normal"
-              name="joinDay"
-              label="Datum pristupa:"
-              value={values.joinDay}
-              readOnly={inputProps.readOnly ? true : false}
-              onChange={(e) => {
-                setFieldValue("joinDay", toStandardTime(e));
-                setFieldTouched("joinDay", true, true);
-                validateField("joinDay");
-              }}
-              onBlur={handleBlur}
-              renderInput={(params) => <TextField {...params} />}
-            />
-            <span>
-              {touched.joinDay && Boolean(errors.joinDay) ? errors.joinDay : ""}
-            </span>
-            <br />
-            <TextField
-              fullWidth
-              margin="normal"
-              name="address"
-              label="Adresa:"
-              value={values.address}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={touched.address && Boolean(errors.address)}
-              helperText={touched.address && errors.address}
-              multiline
-              maxRows={4}
-              variant="outlined"
-            />
+            <Grid container spacing={4}>
+              <Grid item xs={4}>
+                <TextField
+                  variant="standard"
+                  fullWidth
+                  margin="normal"
+                  color="secondary"
+                  name="isbn"
+                  label="ISBN"
+                  value={values.isbn}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.isbn && Boolean(errors.isbn)}
+                  helperText={touched.isbn && errors.isbn}
+                  InputProps={inputProps}
+                />
+              </Grid>
 
-            {mode === "view" ? (
-              ""
-            ) : (
-              <Button
-                disabled={isSubmitting}
-                color="primary"
-                variant="contained"
-                fullWidth
-                type="submit"
+              <Grid item xs={4}>
+                <TextField
+                  variant="standard"
+                  fullWidth
+                  margin="normal"
+                  color="secondary"
+                  name="pages"
+                  label="Pages"
+                  value={values.pages}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.pages && Boolean(errors.pages)}
+                  helperText={touched.pages && errors.pages}
+                  InputProps={inputProps}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <DatePicker
+                  name="publishDate"
+                  label="Published on:"
+                  value={values.publishDate}
+                  readOnly={inputProps.readOnly ? true : false}
+                  onChange={(e) => {
+                    setFieldValue("publishDate", toStandardTime(e));
+                    setFieldTouched("publishDate", true, true);
+                    validateField("publishDate");
+                  }}
+                  onBlur={handleBlur}
+                  renderInput={(params) => (
+                    <TextField
+                      variant="standard"
+                      margin="normal"
+                      color="secondary"
+                      {...params}
+                    />
+                  )}
+                />
+                <span className="validation">
+                  {touched.publishDate && Boolean(errors.publishDate)
+                    ? errors.publishDate
+                    : ""}
+                </span>
+              </Grid>
+            </Grid>
+            <Grid container spacing={4} sx={{ mb: "26px" }}>
+              <Grid item xs={4}>
+                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                  <InputLabel id="genre" color="secondary">
+                    Genre
+                  </InputLabel>
+                  <Select
+                    labelId="genre"
+                    id="genre"
+                    variant="standard"
+                    fullWidth
+                    margin="normal"
+                    color="secondary"
+                    label="Genre"
+                    name="genre"
+                    value={values.genre}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    disabled={inputProps.readOnly}
+                  >
+                    <MenuItem value="Science Fiction">Science Fiction</MenuItem>
+                    <MenuItem value="Fantasy">Fantasy</MenuItem>
+                    <MenuItem value="Computing">Computing</MenuItem>
+                    <MenuItem value="Mystery">Mystery</MenuItem>
+                    <MenuItem value="Horror">Horror</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+
+              <Grid
+                item
+                xs={4}
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
               >
-                Snimi
-              </Button>
-            )}
+                <Typography component="legend" sx={{ fontSize: "12px" }}>
+                  {values.available ? "Avaialble" : "Not available"}
+                </Typography>
+                <Switch
+                  variant="standard"
+                  color="secondary"
+                  name="available"
+                  label="Available"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  checked={values.available}
+                  value={values.available}
+                  error={touched.available && Boolean(errors.available)}
+                  helperText={touched.available && errors.available}
+                  InputProps={inputProps}
+                  disabled={inputProps.readOnly}
+                />
+              </Grid>
+              <Grid
+                item
+                xs={4}
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography
+                    component="legend"
+                    sx={{ fontSize: "12px", mb: "4px" }}
+                  >
+                    Rating
+                  </Typography>
+                  <Rating
+                    name="rating"
+                    label="Rating"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.rating}
+                    size="large"
+                    precision={0.5}
+                    sx={{
+                      color: "secondary.main",
+                    }}
+                    icon={<FavoriteIcon fontSize="inherit" />}
+                    emptyIcon={<FavoriteBorderIcon fontSize="inherit" />}
+                    disabled={inputProps.readOnly}
+                  />
+                </Box>
+              </Grid>
+            </Grid>
+            <Grid container spacing={4}>
+              {mode === "view" ? (
+                ""
+              ) : (
+                <Grid
+                  item
+                  xs={12}
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Button
+                    disabled={isSubmitting}
+                    variant="text"
+                    color="secondary"
+                    type="submit"
+                  >
+                    {`SAVE CHANGES FOR ${values.title}`}
+                  </Button>
+                </Grid>
+              )}
+            </Grid>
           </form>
         )}
       </Formik>
@@ -177,14 +401,16 @@ const BookDetails = ({ startingMode, customer, action }) => {
 };
 
 BookDetails.defaultProps = {
-  customer: {
+  book: {
     id: null,
-    firstName: "",
-    lastName: "",
-    birthday: "",
-    joinDay: "",
-    email: "",
-    address: "",
+    authors: "",
+    publishDate: "",
+    rating: "",
+    genre: "",
+    title: "",
+    isbn: "",
+    available: "",
+    pages: "",
   },
   startingMode: "view",
 };

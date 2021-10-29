@@ -8,7 +8,17 @@ import BookSearchPage from "./components/BookSearchPage";
 import BookDetails from "./components/BookDetails";
 import { addBook } from "./components/accessHooks";
 import BookDetailsPage from "./components/BookDetailsPage";
-
+import Divider from "@mui/material/Divider";
+import Box from "@mui/material/Box";
+import {
+  pink,
+  lightGreen,
+  blue,
+  yellow,
+  cyan,
+  deepPurple,
+  deepOrange,
+} from "@mui/material/colors";
 import "./App.css";
 
 import {
@@ -38,7 +48,7 @@ const AuthButton = () => {
         margin="normal"
         color="secondary"
         onClick={() => {
-          signout(() => history.push("/"));
+          signout(() => history.push("/login"));
         }}
       >
         Sign out
@@ -87,55 +97,101 @@ const AddBookPage = () => {
   );
 };
 
+const NavigationStrip = () => {
+  const [login] = useAuth();
+  if (login) {
+    return (
+      <nav className="mainNav">
+        <AuthButton></AuthButton>
+        <span style={{ flexGrow: 1 }} />
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Button
+            margin="normal"
+            color="secondary"
+            component={RouterLink}
+            to="/allbooks"
+            variant="text"
+            sx={{ pt: 0, pb: 0 }}
+          >
+            ALL BOOKS
+          </Button>
+          <Divider
+            orientation="vertical"
+            color="#ab003c"
+            variant="middle"
+            flexItem
+          />
+
+          <Button
+            margin="normal"
+            color="secondary"
+            component={RouterLink}
+            to="/searchbooks"
+            variant="text"
+            sx={{ pt: 0, pb: 0 }}
+          >
+            SEARCH BOOKS
+          </Button>
+          <Divider
+            orientation="vertical"
+            color="#ab003c"
+            variant="middle"
+            flexItem
+          />
+
+          <Button
+            margin="normal"
+            color="secondary"
+            component={RouterLink}
+            to="/searchbyauthors"
+            variant="text"
+            sx={{ pt: 0, pb: 0 }}
+          >
+            SEARCH BY AUTHORS
+          </Button>
+          <Divider
+            orientation="vertical"
+            color="#ab003c"
+            variant="middle"
+            flexItem
+          />
+
+          <Button
+            margin="normal"
+            color="secondary"
+            component={RouterLink}
+            to="/books/new"
+            variant="text"
+            sx={{ pt: 0, pb: 0 }}
+          >
+            ADD BOOK
+          </Button>
+        </Box>
+      </nav>
+    );
+  } else {
+    return (
+      <nav className="mainNav">
+        <AuthButton></AuthButton>{" "}
+      </nav>
+    );
+  }
+};
+
 function App() {
   return (
     <LocalizationProvider dateAdapter={AdapterLuxon}>
       <ProvideAuth>
         <Router>
+          <Redirect from="/" to="/login" />
           <div>
-            <nav className="mainNav">
-              <Button
-                margin="normal"
-                color="secondary"
-                component={RouterLink}
-                to="/allbooks"
-                variant="outlined"
-                sx={{ marginRight: "10px" }}
-              >
-                ALL BOOKS
-              </Button>
-              <Button
-                margin="normal"
-                color="secondary"
-                component={RouterLink}
-                to="/searchbooks"
-                variant="outlined"
-                sx={{ marginRight: "10px" }}
-              >
-                SEARCH BOOKS
-              </Button>
-              <Button
-                margin="normal"
-                color="secondary"
-                component={RouterLink}
-                to="/searchauthors"
-                variant="outlined"
-                sx={{ marginRight: "10px" }}
-              >
-                SEARCH AUTHORS
-              </Button>
-              <Button
-                margin="normal"
-                color="secondary"
-                component={RouterLink}
-                to="/books/new"
-                variant="outlined"
-              >
-                ADD BOOK
-              </Button>
-              <span style={{ flexGrow: 1 }} />
-              <AuthButton></AuthButton>
-            </nav>
+            <NavigationStrip />
             <div className="mainContent">
               <Switch>
                 <Route path="/login">
@@ -156,6 +212,9 @@ function App() {
                 <PrivateRoute path="/books/:cid/:operation">
                   <BookDetailsPage />
                 </PrivateRoute>
+                <Route path="/login">
+                  <LoginBox />
+                </Route>
                 <Route path="/">
                   <h1 style={{ color: "white" }}>BRAINS BOOKS</h1>
                 </Route>
