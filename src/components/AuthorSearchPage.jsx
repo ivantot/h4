@@ -2,7 +2,7 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 import {
   usePagedBookList,
   deleteBook,
-  usePagedSearchBookList,
+  usePagedSearchByAuthorBookList,
 } from "./accessHooks";
 import BookList from "./BookList";
 import TablePagination from "@mui/material/TablePagination";
@@ -19,7 +19,7 @@ const randomIndex = () => {
   return Math.floor(Math.random() * 100);
 };
 
-const BookSearchPage = () => {
+const AuthorSearchPage = () => {
   const [query, setQuery] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [quote, setQuote] = useState(randomIndex());
@@ -38,7 +38,7 @@ const BookSearchPage = () => {
     pageSize,
     setPageSize,
     reload,
-  ] = usePagedSearchBookList(10, searchQuery);
+  ] = usePagedSearchByAuthorBookList(10, searchQuery);
   if (loading) {
     return <CircularProgress />;
   } else {
@@ -60,7 +60,7 @@ const BookSearchPage = () => {
             color="secondary"
             margin="normal"
             name="search"
-            label="Search books"
+            label="Search authors"
             helperText={
               <Typography variant="caption" display="block">
                 {quotes.quotes[quote].quote}
@@ -75,7 +75,6 @@ const BookSearchPage = () => {
           />
           <Button
             sx={{ p: "0px", justifyContent: "end" }}
-            fullWidth
             variant="text"
             color="secondary"
             onClick={() => {
@@ -86,6 +85,19 @@ const BookSearchPage = () => {
             {" "}
             <SearchIcon color="secondary" />
           </Button>
+          {list.length === 0 || query === "" ? (
+            <Typography
+              variant="caption"
+              display="block"
+              textAlign="left"
+              color="secondary"
+            >
+              Your query, regretfully, yielded no meaningful results, please
+              reflect and give it another shot.
+            </Typography>
+          ) : (
+            ""
+          )}
         </Box>
         <Box
           sx={{
@@ -97,36 +109,46 @@ const BookSearchPage = () => {
             ml: "300px",
           }}
         >
-          <BookList
-            list={list}
-            onDelete={(id) => {
-              deleteBook(id, login);
-              reload();
+          {query !== "" ? (
+            <BookList
+              list={list}
+              onDelete={(id) => {
+                deleteBook(id, login);
+                reload();
+              }}
+            />
+          ) : (
+            ""
+          )}
+        </Box>
+        {list.length !== 0 ? (
+          <TablePagination
+            component="div"
+            count={length}
+            page={page - 1}
+            onPageChange={(e, p) => goToPage(p)}
+            rowsPerPage={pageSize}
+            onRowsPerPageChange={(e) => {
+              setPageSize(parseInt(e.target.value, 10));
+            }}
+            labelDisplayedRows={({ from, to, count, page }) =>
+              `Showing page: ${page + 1} (${from}-${
+                to + 1
+              } from total ${count})`
+            }
+            labelRowsPerPage="Books per page: "
+            sx={{
+              justifyContent: "center",
+              alignItems: "center",
+              color: "white",
             }}
           />
-        </Box>
-        <TablePagination
-          component="div"
-          count={length}
-          page={page - 1}
-          onPageChange={(e, p) => goToPage(p)}
-          rowsPerPage={pageSize}
-          onRowsPerPageChange={(e) => {
-            setPageSize(parseInt(e.target.value, 10));
-          }}
-          labelDisplayedRows={({ from, to, count, page }) =>
-            `Showing page: ${page + 1} (${from}-${to + 1} from total ${count})`
-          }
-          labelRowsPerPage="Books per page: "
-          sx={{
-            justifyContent: "center",
-            alignItems: "center",
-            color: "white",
-          }}
-        />
+        ) : (
+          ""
+        )}
       </React.Fragment>
     );
   }
 };
 
-export default BookSearchPage;
+export default AuthorSearchPage;

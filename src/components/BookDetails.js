@@ -17,17 +17,22 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
-import Divider from "@mui/material/Divider";
+import FiberManualRecordOutlinedIcon from "@mui/icons-material/FiberManualRecordOutlined";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
 import FormGroup from "@mui/material/FormGroup";
-
+import Accordion from "@mui/material/Accordion";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FormLabel from "@mui/material/FormLabel";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
+import { usePagedSearchByAuthorBookList } from "./accessHooks";
+import { Divider } from "@mui/material";
 
 const ErrorMessage = ({ name }) => (
   <Field
@@ -40,11 +45,45 @@ const ErrorMessage = ({ name }) => (
   />
 );
 
-const BookDetails = ({ startingMode, book, action }) => {
+// const ListOfBooksByAuthors = (props) => {
+//   let list = usePagedSearchByAuthorBookList(100, props.author);
+//   let titles = list[0].map((x, index) => {
+//     <Typography
+//       key={index}
+//       sx={{
+//         fontWeight: "bold",
+//         fontSize: "h8.fontSize",
+//       }}
+//     >
+//       x.title
+//     </Typography>;
+//   });
+//   return <Box>{titles}</Box>;
+// };
+
+// const ListOfBooksByAuthor = (author) => {
+//   let list = usePagedSearchByAuthorBookList(100, author);
+//   return list;
+// };
+
+// const BookTitle = (props) => {
+//   return (
+//     <Typography
+//       key={props.index}
+//       sx={{
+//         fontWeight: "bold",
+//         fontSize: "h8.fontSize",
+//       }}
+//     >
+//       props.title
+//     </Typography>
+//   );
+// };
+
+const BookDetails = ({ startingMode, book, allbooks, action }) => {
   const [mode, setMode] = useState(startingMode);
   const history = useHistory();
   const [ratingValue, setRatingValue] = React.useState(2);
-
   let message = "";
   let inputProps = {};
   let hideID = false;
@@ -57,6 +96,7 @@ const BookDetails = ({ startingMode, book, action }) => {
     message = "New book";
     hideID = true;
   }
+
   return (
     <div className="editBox">
       <Grid container spacing={2}>
@@ -173,7 +213,7 @@ const BookDetails = ({ startingMode, book, action }) => {
                                   <DeleteIcon color="secondary" />
                                 </IconButton>
                               ) : (
-                                ""
+                                <Box sx={{ mr: "10px" }}></Box>
                               )}
                             </Grid>
                           </Grid>
@@ -393,6 +433,63 @@ const BookDetails = ({ startingMode, book, action }) => {
                 </Grid>
               )}
             </Grid>
+            {mode === "view" ? (
+              <Box>
+                <Typography
+                  sx={{
+                    pt: "40px",
+                    pb: "20px",
+                    fontWeight: "bold",
+                    fontSize: "h7.fontSize",
+                    textAlign: "left",
+                  }}
+                >
+                  Written by authors:
+                </Typography>
+                {values.authors &&
+                  values.authors.length > 0 &&
+                  values.authors.map((author, index) => (
+                    <Box key={index}>
+                      <Accordion>
+                        <AccordionSummary
+                          expandIcon={<ExpandMoreIcon />}
+                          aria-controls="panel1a-content"
+                          id="panel1a-header"
+                        >
+                          <Typography>{author}</Typography>
+                        </AccordionSummary>
+                        <AccordionDetails>
+                          {allbooks.map((book) => {
+                            if (book.authors.includes(author)) {
+                              return (
+                                <Box>
+                                  <Typography
+                                    variant="caption"
+                                    display="block"
+                                    textAlign="left"
+                                    // color="secondary"
+                                  >
+                                    {`${
+                                      book.title
+                                    }, published in ${book.publishDate.slice(
+                                      0,
+                                      4
+                                    )}, in
+                                  genre: ${book.genre}`}
+                                  </Typography>
+                                  <Divider sx={{ bgcolor: "secondary.main" }} />
+                                </Box>
+                              );
+                            }
+                          })}
+                        </AccordionDetails>
+                      </Accordion>
+                    </Box>
+                  ))}
+              </Box>
+            ) : (
+              ""
+            )}
           </form>
         )}
       </Formik>

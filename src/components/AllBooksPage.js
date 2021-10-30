@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { usePagedBookList, deleteBook } from "./accessHooks";
+import { useFilteredPagedBookList, deleteBook } from "./accessHooks";
 import BookList from "./BookList";
 import TablePagination from "@mui/material/TablePagination";
 import { Button } from "@mui/material";
@@ -8,9 +8,11 @@ import * as React from "react";
 import { Box } from "@mui/system";
 import { CircularProgress } from "@mui/material";
 import { useAuth } from "./useAuth";
+import { Divider } from "@mui/material";
 
 const AllBooksPage = () => {
   const [
+    changeGenre,
     list,
     location,
     loading,
@@ -24,7 +26,7 @@ const AllBooksPage = () => {
     pageSize,
     setPageSize,
     reload,
-  ] = usePagedBookList(10);
+  ] = useFilteredPagedBookList(10);
   const [login] = useAuth();
   if (loading) {
     return <CircularProgress />;
@@ -34,12 +36,100 @@ const AllBooksPage = () => {
         <Box
           sx={{
             display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            mt: "50px",
+          }}
+        >
+          <Button
+            margin="normal"
+            color="secondary"
+            variant="text"
+            sx={{ pt: 0, pb: 0 }}
+          >
+            ALL
+          </Button>
+          <Divider
+            orientation="vertical"
+            color="#ab003c"
+            variant="middle"
+            flexItem
+          />
+          <Button
+            margin="normal"
+            color="secondary"
+            onClick={changeGenre("Computing")}
+            variant="text"
+            sx={{ pt: 0, pb: 0 }}
+          >
+            Computing
+          </Button>
+          <Divider
+            orientation="vertical"
+            color="#ab003c"
+            variant="middle"
+            flexItem
+          />
+          <Button
+            margin="normal"
+            color="secondary"
+            variant="text"
+            sx={{ pt: 0, pb: 0 }}
+          >
+            Horror
+          </Button>
+          <Divider
+            orientation="vertical"
+            color="#ab003c"
+            variant="middle"
+            flexItem
+          />
+          <Button
+            margin="normal"
+            color="secondary"
+            variant="text"
+            sx={{ pt: 0, pb: 0 }}
+          >
+            Mystery
+          </Button>
+          <Divider
+            orientation="vertical"
+            color="#ab003c"
+            variant="middle"
+            flexItem
+          />
+          <Button
+            margin="normal"
+            color="secondary"
+            variant="text"
+            sx={{ pt: 0, pb: 0 }}
+          >
+            Sci-Fi
+          </Button>
+          <Divider
+            orientation="vertical"
+            color="#ab003c"
+            variant="middle"
+            flexItem
+          />
+          <Button
+            margin="normal"
+            color="secondary"
+            variant="text"
+            sx={{ pt: 0, pb: 0 }}
+          >
+            Fantasy
+          </Button>
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
             flexDirection: "row",
             flexWrap: "wrap",
             // justifyContent: "center",
             mr: "300px",
             ml: "300px",
-            mt: "50px",
+            // mt: "50px",
           }}
         >
           <BookList

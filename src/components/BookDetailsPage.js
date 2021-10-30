@@ -4,10 +4,12 @@ import { useBook, updateBook } from "./accessHooks";
 import BookDetails from "./BookDetails";
 import { useAuth } from "./useAuth";
 import { CircularProgress } from "@mui/material";
+import { usePagedBookList } from "./accessHooks";
 
 const BookDetailsPage = () => {
   const { cid, operation } = useParams();
   const [book, loading] = useBook(cid);
+  const [list] = usePagedBookList(1000);
   const [login] = useAuth();
   if (loading) {
     return <CircularProgress />;
@@ -15,6 +17,7 @@ const BookDetailsPage = () => {
     return (
       <BookDetails
         book={book}
+        allbooks={list}
         startingMode={operation}
         action={
           operation === "edit" ? (book) => updateBook(book, login) : undefined

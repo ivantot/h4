@@ -75,7 +75,6 @@ const BookSearchPage = () => {
           />
           <Button
             sx={{ p: "0px", justifyContent: "end" }}
-            fullWidth
             variant="text"
             color="secondary"
             onClick={() => {
@@ -86,6 +85,19 @@ const BookSearchPage = () => {
             {" "}
             <SearchIcon color="secondary" />
           </Button>
+          {list.length === 0 || query === "" ? (
+            <Typography
+              variant="caption"
+              display="block"
+              textAlign="left"
+              color="secondary"
+            >
+              Your query, regretfully, yielded no meaningful results, please
+              reflect and give it another shot.
+            </Typography>
+          ) : (
+            ""
+          )}
         </Box>
         <Box
           sx={{
@@ -97,33 +109,43 @@ const BookSearchPage = () => {
             ml: "300px",
           }}
         >
-          <BookList
-            list={list}
-            onDelete={(id) => {
-              deleteBook(id, login);
-              reload();
+          {query !== "" ? (
+            <BookList
+              list={list}
+              onDelete={(id) => {
+                deleteBook(id, login);
+                reload();
+              }}
+            />
+          ) : (
+            ""
+          )}
+        </Box>
+        {list.length !== 0 ? (
+          <TablePagination
+            component="div"
+            count={length}
+            page={page - 1}
+            onPageChange={(e, p) => goToPage(p)}
+            rowsPerPage={pageSize}
+            onRowsPerPageChange={(e) => {
+              setPageSize(parseInt(e.target.value, 10));
+            }}
+            labelDisplayedRows={({ from, to, count, page }) =>
+              `Showing page: ${page + 1} (${from}-${
+                to + 1
+              } from total ${count})`
+            }
+            labelRowsPerPage="Books per page: "
+            sx={{
+              justifyContent: "center",
+              alignItems: "center",
+              color: "white",
             }}
           />
-        </Box>
-        <TablePagination
-          component="div"
-          count={length}
-          page={page - 1}
-          onPageChange={(e, p) => goToPage(p)}
-          rowsPerPage={pageSize}
-          onRowsPerPageChange={(e) => {
-            setPageSize(parseInt(e.target.value, 10));
-          }}
-          labelDisplayedRows={({ from, to, count, page }) =>
-            `Showing page: ${page + 1} (${from}-${to + 1} from total ${count})`
-          }
-          labelRowsPerPage="Books per page: "
-          sx={{
-            justifyContent: "center",
-            alignItems: "center",
-            color: "white",
-          }}
-        />
+        ) : (
+          ""
+        )}
       </React.Fragment>
     );
   }

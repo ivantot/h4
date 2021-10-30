@@ -14,9 +14,9 @@
 
 .mainContent {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
   grid-row: 2;
   grid-column: 1;
 }

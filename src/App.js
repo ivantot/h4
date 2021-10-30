@@ -5,6 +5,7 @@ import { LoginBoxRevisited } from "./components/LoginBoxRevisited";
 import { LoginBox } from "./components/LoginBox";
 import AllBooksPage from "./components/AllBooksPage";
 import BookSearchPage from "./components/BookSearchPage";
+import AuthorSearchPage from "./components/AuthorSearchPage";
 import BookDetails from "./components/BookDetails";
 import { addBook } from "./components/accessHooks";
 import BookDetailsPage from "./components/BookDetailsPage";
@@ -205,6 +206,9 @@ function App() {
                 </PrivateRoute>
                 <PrivateRoute path="/searchbooks">
                   <BookSearchPage />
+                </PrivateRoute>
+                <PrivateRoute path="/searchbyauthors">
+                  <AuthorSearchPage />
                 </PrivateRoute>
                 <PrivateRoute path="/books/new">
                   <AddBookPage />
