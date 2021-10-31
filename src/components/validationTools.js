@@ -6,8 +6,9 @@ export const bookYupSchema = yup.object().shape({
   id: yup.mixed().nullable(true).default(null),
   authors: yup
     .array()
-    .min(1, "At least one author, please.")
     .of(yup.string().ensure().required("Author name required."))
+    .min(1, "At least one author, please.")
+    .required()
     .typeError("Author name required."),
   title: yup.string().ensure().required("Book title required"),
   publishDate: yup

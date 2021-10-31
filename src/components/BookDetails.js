@@ -27,13 +27,7 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import { Divider } from "@mui/material";
-import Snackbar from "@mui/material/Snackbar";
-import MuiAlert from "@mui/material/Alert";
 import CloseIcon from "@mui/icons-material/Close";
-
-const Alert = React.forwardRef(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
 
 const ErrorMessage = ({ name }) => (
   <Field
@@ -54,14 +48,6 @@ const BookDetails = ({ startingMode, book, allbooks, action }) => {
   let inputProps = {};
   let hideID = false;
   const [open, setOpen] = React.useState(false);
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setOpen(false);
-  };
 
   if (mode === "view") {
     message = `Showing details for ${book.title}`;
@@ -438,25 +424,13 @@ const BookDetails = ({ startingMode, book, allbooks, action }) => {
                 >
                   <Button
                     disabled={isSubmitting}
+                    disable
                     variant="text"
                     color="secondary"
                     type="submit"
                   >
                     {`SAVE CHANGES FOR ${values.title}`}
                   </Button>
-                  <Snackbar
-                    open={open}
-                    autoHideDuration={6000}
-                    onClose={handleClose}
-                  >
-                    <Alert
-                      onClose={handleClose}
-                      severity="success"
-                      sx={{ width: "100%" }}
-                    >
-                      Book stored!
-                    </Alert>
-                  </Snackbar>
                 </Grid>
               )}
             </Grid>

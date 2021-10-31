@@ -106,7 +106,7 @@ const NavigationStrip = () => {
         >
           <Button
             margin="normal"
-            color="secondary"
+            color={"secondary"}
             component={RouterLink}
             to="/allbooks"
             variant="text"
