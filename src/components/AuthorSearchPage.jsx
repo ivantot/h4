@@ -1,13 +1,11 @@
-import React, { useState, useMemo, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import {
-  usePagedBookList,
   deleteBook,
-  usePagedSearchByAuthorBookList,
+  useFilteredPagedSearchByAuthorBookList,
 } from "./accessHooks";
 import BookList from "./BookList";
 import TablePagination from "@mui/material/TablePagination";
 import { Button, Typography } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
 import { TextField } from "@mui/material";
 import { Box } from "@mui/material";
 import { useAuth } from "./useAuth";
@@ -15,6 +13,8 @@ import { CircularProgress } from "@mui/material";
 import "./BookSearchPage.css";
 import quotes from "../static/quotes/quotes.json";
 import SearchIcon from "@mui/icons-material/Search";
+import { Divider } from "@mui/material";
+
 const randomIndex = () => {
   return Math.floor(Math.random() * 100);
 };
@@ -25,6 +25,7 @@ const AuthorSearchPage = () => {
   const [quote, setQuote] = useState(randomIndex());
   const [login] = useAuth();
   const [
+    changeGenre,
     list,
     location,
     loading,
@@ -35,14 +36,14 @@ const AuthorSearchPage = () => {
     back,
     goToPage,
     length,
+    genre,
     pageSize,
     setPageSize,
     reload,
-  ] = usePagedSearchByAuthorBookList(10, searchQuery);
+  ] = useFilteredPagedSearchByAuthorBookList(10, searchQuery);
   if (loading) {
     return <CircularProgress />;
   } else {
-    console.log(quote);
     return (
       <React.Fragment>
         <Box
@@ -85,20 +86,117 @@ const AuthorSearchPage = () => {
             {" "}
             <SearchIcon color="secondary" />
           </Button>
-          {list.length === 0 || query === "" ? (
+          {searchQuery === 0 || list.length === 0 ? (
             <Typography
               variant="caption"
               display="block"
               textAlign="left"
               color="secondary"
             >
-              Your query, regretfully, yielded no meaningful results, please
-              reflect and give it another shot.
+              Your query, regretfully, yielded no meaningful results.
             </Typography>
           ) : (
             ""
           )}
         </Box>
+        {searchQuery !== 0 || list.length !== 0 ? (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Button
+              margin="normal"
+              color={genre === "" ? "primary" : "secondary"}
+              onClick={() => {
+                changeGenre("");
+              }}
+              variant="text"
+              sx={{ pt: 0, pb: 0 }}
+            >
+              ALL
+            </Button>
+            <Divider
+              orientation="vertical"
+              color="#ab003c"
+              variant="middle"
+              flexItem
+            />
+            <Button
+              margin="normal"
+              color={genre === "Computing" ? "primary" : "secondary"}
+              onClick={() => changeGenre("Computing")}
+              variant="text"
+              sx={{ pt: 0, pb: 0 }}
+            >
+              Computing
+            </Button>
+            <Divider
+              orientation="vertical"
+              color="#ab003c"
+              variant="middle"
+              flexItem
+            />
+            <Button
+              margin="normal"
+              color={genre === "Horror" ? "primary" : "secondary"}
+              onClick={() => changeGenre("Horror")}
+              variant="text"
+              sx={{ pt: 0, pb: 0 }}
+            >
+              Horror
+            </Button>
+            <Divider
+              orientation="vertical"
+              color="#ab003c"
+              variant="middle"
+              flexItem
+            />
+            <Button
+              margin="normal"
+              color={genre === "Mystery" ? "primary" : "secondary"}
+              onClick={() => changeGenre("Mystery")}
+              variant="text"
+              sx={{ pt: 0, pb: 0 }}
+            >
+              Mystery
+            </Button>
+            <Divider
+              orientation="vertical"
+              color="#ab003c"
+              variant="middle"
+              flexItem
+            />
+            <Button
+              margin="normal"
+              color={genre === "Science Fiction" ? "primary" : "secondary"}
+              onClick={() => changeGenre("Science Fiction")}
+              variant="text"
+              sx={{ pt: 0, pb: 0 }}
+            >
+              Sci-Fi
+            </Button>
+            <Divider
+              orientation="vertical"
+              color="#ab003c"
+              variant="middle"
+              flexItem
+            />
+            <Button
+              margin="normal"
+              color={genre === "Fantasy" ? "primary" : "secondary"}
+              onClick={() => changeGenre("Fantasy")}
+              variant="text"
+              sx={{ pt: 0, pb: 0 }}
+            >
+              Fantasy
+            </Button>
+          </Box>
+        ) : (
+          ""
+        )}
         <Box
           sx={{
             display: "flex",
@@ -109,7 +207,7 @@ const AuthorSearchPage = () => {
             ml: "300px",
           }}
         >
-          {query !== "" ? (
+          {searchQuery !== 0 || list.length !== 0 ? (
             <BookList
               list={list}
               onDelete={(id) => {
@@ -121,7 +219,7 @@ const AuthorSearchPage = () => {
             ""
           )}
         </Box>
-        {list.length !== 0 ? (
+        {searchQuery !== 0 || list.length !== 0 ? (
           <TablePagination
             component="div"
             count={length}

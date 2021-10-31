@@ -1,9 +1,7 @@
-import { useState } from "react";
 import { useFilteredPagedBookList, deleteBook } from "./accessHooks";
 import BookList from "./BookList";
 import TablePagination from "@mui/material/TablePagination";
 import { Button } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
 import * as React from "react";
 import { Box } from "@mui/system";
 import { CircularProgress } from "@mui/material";
@@ -23,6 +21,7 @@ const AllBooksPage = () => {
     back,
     goToPage,
     length,
+    genre,
     pageSize,
     setPageSize,
     reload,
@@ -43,7 +42,10 @@ const AllBooksPage = () => {
         >
           <Button
             margin="normal"
-            color="secondary"
+            color={genre === "" ? "primary" : "secondary"}
+            onClick={() => {
+              changeGenre("");
+            }}
             variant="text"
             sx={{ pt: 0, pb: 0 }}
           >
@@ -57,8 +59,8 @@ const AllBooksPage = () => {
           />
           <Button
             margin="normal"
-            color="secondary"
-            onClick={changeGenre("Computing")}
+            color={genre === "Computing" ? "primary" : "secondary"}
+            onClick={() => changeGenre("Computing")}
             variant="text"
             sx={{ pt: 0, pb: 0 }}
           >
@@ -72,7 +74,8 @@ const AllBooksPage = () => {
           />
           <Button
             margin="normal"
-            color="secondary"
+            color={genre === "Horror" ? "primary" : "secondary"}
+            onClick={() => changeGenre("Horror")}
             variant="text"
             sx={{ pt: 0, pb: 0 }}
           >
@@ -86,7 +89,8 @@ const AllBooksPage = () => {
           />
           <Button
             margin="normal"
-            color="secondary"
+            color={genre === "Mystery" ? "primary" : "secondary"}
+            onClick={() => changeGenre("Mystery")}
             variant="text"
             sx={{ pt: 0, pb: 0 }}
           >
@@ -100,7 +104,8 @@ const AllBooksPage = () => {
           />
           <Button
             margin="normal"
-            color="secondary"
+            color={genre === "Science Fiction" ? "primary" : "secondary"}
+            onClick={() => changeGenre("Science Fiction")}
             variant="text"
             sx={{ pt: 0, pb: 0 }}
           >
@@ -114,7 +119,8 @@ const AllBooksPage = () => {
           />
           <Button
             margin="normal"
-            color="secondary"
+            color={genre === "Fantasy" ? "primary" : "secondary"}
+            onClick={() => changeGenre("Fantasy")}
             variant="text"
             sx={{ pt: 0, pb: 0 }}
           >

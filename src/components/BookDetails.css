@@ -8,6 +8,16 @@
   font-size: 0.75em;
   font-weight: 400;
 }
+.validation-center {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  margin-left: 5px;
+  color: red;
+  font-size: 0.75em;
+  font-weight: 400;
+}
 
 .validation-caption {
   margin: 0;

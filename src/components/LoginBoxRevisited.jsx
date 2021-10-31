@@ -2,7 +2,6 @@ import { useHistory, useLocation } from "react-router-dom";
 
 import React, { useState } from "react";
 import { checkUsername } from "./accessHooks";
-import { BrowserRouter as Router, Link as RouterLink } from "react-router-dom";
 
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
@@ -31,25 +30,6 @@ import IconButton from "@mui/material/IconButton";
 import Input from "@mui/material/Input";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
-
-// const lowercaseRegex = /^(?=(?:.*?[a-z]){2})/;
-// const uppercaseRegex = /^(?=(?:.*?[A-Z]){2})/;
-// const numericRegex = /^(?=.*[0-9])/;
-// const specCharRegex = /^(?=.*\W)/;
-
-// const SignupSchema = Yup.object().shape({
-//   username: Yup.string().min(2, "Too Short!").required("Required"),
-//   password: Yup.string()
-//     .matches(lowercaseRegex, "Two lowercase letters required!")
-//     .matches(uppercaseRegex, "Two uppercase letters required!")
-//     .matches(numericRegex, "One number required!")
-//     .matches(specCharRegex, "One special character required!")
-//     .min(12, "Minimum 12 characters required!")
-//     .required("Required"),
-//   repeatedPassword: Yup.string()
-//     .oneOf([Yup.ref("password")], "Password must be the same!")
-//     .required("Required"),
-// });
 
 export const LoginBoxRevisited = () => {
   const history = useHistory();

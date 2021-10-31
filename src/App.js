@@ -11,15 +11,7 @@ import { addBook } from "./components/accessHooks";
 import BookDetailsPage from "./components/BookDetailsPage";
 import Divider from "@mui/material/Divider";
 import Box from "@mui/material/Box";
-import {
-  pink,
-  lightGreen,
-  blue,
-  yellow,
-  cyan,
-  deepPurple,
-  deepOrange,
-} from "@mui/material/colors";
+
 import "./App.css";
 
 import {
@@ -52,7 +44,7 @@ const AuthButton = () => {
           signout(() => history.push("/login"));
         }}
       >
-        Sign out
+        {` Sign out, ${login.username}`}
       </Button>
     );
   } else {

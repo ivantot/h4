@@ -1,5 +1,4 @@
 import * as yup from "yup";
-import { object, array, string, number } from "yup";
 
 import { DateTime } from "luxon";
 
@@ -7,6 +6,7 @@ export const bookYupSchema = yup.object().shape({
   id: yup.mixed().nullable(true).default(null),
   authors: yup
     .array()
+    .min(1, "At least one author, please.")
     .of(yup.string().ensure().required("Author name required."))
     .typeError("Author name required."),
   title: yup.string().ensure().required("Book title required"),
@@ -15,15 +15,6 @@ export const bookYupSchema = yup.object().shape({
     .max(DateTime.now(), "This book is not from the future")
     .typeError("Must be a date."),
 
-  // rating: yup
-  //   .number()
-  //   .test(
-  //     "maxDigitsAfterDecimal",
-  //     "Rating must have maximum 2 digits after the decimal point.",
-  //     (rating) => /^\d+(\.\d{1,2})?$/.test(rating)
-  //   )
-  //   .min(0, "Rating must be a value between 0 and 5, decimals allowed.")
-  //   .max(5, "Rating must be a value between 0 and 5, decimals allowed."),
   pages: yup
     .number()
     .required("Number of pages required.")
@@ -31,15 +22,16 @@ export const bookYupSchema = yup.object().shape({
     .min(1, "A book must have at least one page."),
 
   // available: yup.boolean("True or false"),
+  // rating: yup.number().required("Rating required"),
   isbn: yup
-    .number()
-    .typeError("Must be a number.")
+    .mixed()
     .test(
       "lengthOfISBN",
       "ISBN must be a 12 number long integer value.",
       (num) => /^(\d{12})$/.test(num)
-    ),
-  // genre: yup.string(),
+    )
+    .typeError("Must be a number"),
+  genre: yup.string().ensure().required("Genre required."),
 });
 
 export const toStandardTime = (time) => {

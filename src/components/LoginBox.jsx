@@ -5,7 +5,6 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import * as React from "react";
-import Typography from "@mui/material/Typography";
 
 import Divider from "@mui/material/Divider";
 import Box from "@mui/material/Box";
@@ -27,7 +26,7 @@ import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
 import AccessibilityNewSharpIcon from "@mui/icons-material/AccessibilityNewSharp";
 import AccessibilityIcon from "@mui/icons-material/Accessibility";
-import { BrowserRouter as Router, Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import { useAuth } from "./useAuth";
 import { Button } from "@mui/material";
 import { Formik } from "formik";

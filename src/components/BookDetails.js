@@ -10,29 +10,30 @@ import DatePicker from "@mui/lab/DatePicker";
 import { useHistory } from "react-router-dom";
 import { Box } from "@mui/system";
 import { Typography } from "@mui/material";
-import { Input } from "@mui/material";
 import { Grid } from "@mui/material";
 import { Rating } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import DeleteIcon from "@mui/icons-material/Delete";
 import IconButton from "@mui/material/IconButton";
-import FiberManualRecordOutlinedIcon from "@mui/icons-material/FiberManualRecordOutlined";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import Switch from "@mui/material/Switch";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import FormControl from "@mui/material/FormControl";
-import FormGroup from "@mui/material/FormGroup";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import FormLabel from "@mui/material/FormLabel";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
-import { usePagedSearchByAuthorBookList } from "./accessHooks";
 import { Divider } from "@mui/material";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
+import CloseIcon from "@mui/icons-material/Close";
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const ErrorMessage = ({ name }) => (
   <Field
@@ -45,41 +46,6 @@ const ErrorMessage = ({ name }) => (
   />
 );
 
-// const ListOfBooksByAuthors = (props) => {
-//   let list = usePagedSearchByAuthorBookList(100, props.author);
-//   let titles = list[0].map((x, index) => {
-//     <Typography
-//       key={index}
-//       sx={{
-//         fontWeight: "bold",
-//         fontSize: "h8.fontSize",
-//       }}
-//     >
-//       x.title
-//     </Typography>;
-//   });
-//   return <Box>{titles}</Box>;
-// };
-
-// const ListOfBooksByAuthor = (author) => {
-//   let list = usePagedSearchByAuthorBookList(100, author);
-//   return list;
-// };
-
-// const BookTitle = (props) => {
-//   return (
-//     <Typography
-//       key={props.index}
-//       sx={{
-//         fontWeight: "bold",
-//         fontSize: "h8.fontSize",
-//       }}
-//     >
-//       props.title
-//     </Typography>
-//   );
-// };
-
 const BookDetails = ({ startingMode, book, allbooks, action }) => {
   const [mode, setMode] = useState(startingMode);
   const history = useHistory();
@@ -87,6 +53,16 @@ const BookDetails = ({ startingMode, book, allbooks, action }) => {
   let message = "";
   let inputProps = {};
   let hideID = false;
+  const [open, setOpen] = React.useState(false);
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
   if (mode === "view") {
     message = `Showing details for ${book.title}`;
     inputProps = { readOnly: true };
@@ -100,7 +76,7 @@ const BookDetails = ({ startingMode, book, allbooks, action }) => {
   return (
     <div className="editBox">
       <Grid container spacing={2}>
-        <Grid item xs={12}>
+        <Grid item xs={11}>
           <Typography
             sx={{
               fontWeight: "bold",
@@ -110,7 +86,32 @@ const BookDetails = ({ startingMode, book, allbooks, action }) => {
             {message}
           </Typography>
         </Grid>
+
+        <Grid
+          item
+          xs={1}
+          sx={{
+            p: "0px",
+            m: "0px",
+            display: "flex",
+            justifyContent: "end",
+          }}
+        >
+          <IconButton
+            sx={{
+              p: "0px",
+              m: "0px",
+              alignItems: "start",
+            }}
+            aria-label="close"
+            type="button"
+            onClick={() => history.goBack()}
+          >
+            <CloseIcon color="secondary" />
+          </IconButton>
+        </Grid>
       </Grid>
+
       <Formik
         initialValues={book}
         validationSchema={bookYupSchema}
@@ -338,6 +339,9 @@ const BookDetails = ({ startingMode, book, allbooks, action }) => {
                     <MenuItem value="Horror">Horror</MenuItem>
                   </Select>
                 </FormControl>
+                <span className="validation-center">
+                  {touched.genre && Boolean(errors.genre) ? errors.genre : ""}
+                </span>
               </Grid>
 
               <Grid
@@ -367,6 +371,11 @@ const BookDetails = ({ startingMode, book, allbooks, action }) => {
                   InputProps={inputProps}
                   disabled={inputProps.readOnly}
                 />
+                {/* <span className="validation-center">
+                  {touched.available && Boolean(errors.available)
+                    ? errors.available
+                    : ""}
+                </span> */}
               </Grid>
               <Grid
                 item
@@ -407,6 +416,11 @@ const BookDetails = ({ startingMode, book, allbooks, action }) => {
                     disabled={inputProps.readOnly}
                   />
                 </Box>
+                <span className="validation-center">
+                  {/* {touched.rating && Boolean(errors.rating)
+                    ? errors.rating
+                    : ""} */}
+                </span>
               </Grid>
             </Grid>
             <Grid container spacing={4}>
@@ -430,6 +444,19 @@ const BookDetails = ({ startingMode, book, allbooks, action }) => {
                   >
                     {`SAVE CHANGES FOR ${values.title}`}
                   </Button>
+                  <Snackbar
+                    open={open}
+                    autoHideDuration={6000}
+                    onClose={handleClose}
+                  >
+                    <Alert
+                      onClose={handleClose}
+                      severity="success"
+                      sx={{ width: "100%" }}
+                    >
+                      Book stored!
+                    </Alert>
+                  </Snackbar>
                 </Grid>
               )}
             </Grid>
@@ -459,10 +486,10 @@ const BookDetails = ({ startingMode, book, allbooks, action }) => {
                           <Typography>{author}</Typography>
                         </AccordionSummary>
                         <AccordionDetails>
-                          {allbooks.map((book) => {
+                          {allbooks.map((book, index) => {
                             if (book.authors.includes(author)) {
                               return (
-                                <Box>
+                                <Box key={index}>
                                   <Typography
                                     variant="caption"
                                     display="block"
